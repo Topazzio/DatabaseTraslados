@@ -10,22 +10,22 @@ var (
 )
 
 const (
-    CompanyRole Role = "company"
+	CompanyRole     Role = "company"
 	CoordinatorRole Role = "coordinator"
 )
 
 type (
-    Role string
+	Role string
 
-    User struct {
-        ID       int
-        Name     string
-        LastName string
-        Email    string
-        Password string
-		Role Role
-    }
-})
+	User struct {
+		ID       int
+		Name     string
+		LastName string
+		Email    string
+		Password string
+		Role     Role
+	}
+)
 
 func (u *User) isNameValid() bool {
 	return u.Name != ""

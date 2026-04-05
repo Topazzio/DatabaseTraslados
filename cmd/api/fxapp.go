@@ -1,7 +1,5 @@
 package main
 
-
-
 import (
 	"context"
 	"database/sql"
@@ -11,10 +9,10 @@ import (
 	"os"
 	"time"
 
-	createCoordinator "eventra/internal/usecase/user/create_coordinator"
 	userhandler "eventra/cmd/handler/user"
 	"eventra/internal/repository/eventradatabase"
 	userCreate "eventra/internal/usecase/user/create"
+	createCoordinator "eventra/internal/usecase/user/create_coordinator"
 
 	_ "github.com/go-sql-driver/mysql"
 	"go.uber.org/fx"
@@ -71,13 +69,17 @@ func newEventraRepo(db *sql.DB) userCreate.Repository {
 	return eventradatabase.New(db)
 }
 
-func newHTTPHandler(createUC *userCreate.UseCase, logger *log.Logger) http.Handler {
+func newHTTPHandler(
+	createUC *userCreate.UseCase,
+	createCoordinatorUC *createCoordinator.UseCase,
+	logger *log.Logger,
+) http.Handler {
 	usersH := userhandler.NewCreateHandler(createUC, logger)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /users", usersH.Handle)
 
-	coordH := userhandler.NewCreateHandler(createCoordinatorUC, logger)
+	coordH := userhandler.NewCreateHandler(createUC, logger)
 	mux.HandleFunc("POST /coordinators", coordH.Handle)
 	return mux
 }
